@@ -1,4 +1,4 @@
-from transferimento_cockpits.__main__ import main
+from cockpit_transfer.__main__ import main
 
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ IMPORT_BUNDLE_SCRIPT = """from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from transferimento_cockpits.multi_transfer import import_products
+from cockpit_transfer.multi_transfer import import_products
 
 
 def main() -> int:
@@ -135,7 +135,7 @@ def create_bundle(
         shutil.copy2(package_path, target_package)
 
     source_pkg_dir = Path(__file__).resolve().parent
-    target_pkg_dir = output_dir / "transferimento_cockpits"
+    target_pkg_dir = output_dir / "cockpit_transfer"
     if target_pkg_dir.exists():
         shutil.rmtree(target_pkg_dir)
     shutil.copytree(source_pkg_dir, target_pkg_dir)

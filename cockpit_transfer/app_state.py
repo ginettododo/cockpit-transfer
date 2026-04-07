@@ -5,7 +5,7 @@ from typing import Any
 
 from .common import ensure_dir, read_json_or_default, write_json
 
-DEFAULT_EXPORT_PRODUCTS = {"codex": True, "gemini": True, "antigravity": False}
+DEFAULT_EXPORT_PRODUCTS = {"codex": True, "gemini": True, "antigravity": True}
 DEFAULT_INSPECT_PRODUCTS = {"codex": True, "gemini": False, "antigravity": False}
 
 
