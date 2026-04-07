@@ -18,7 +18,7 @@ from .runtime_support import default_downloads_dir, default_zip_name, latest_zip
 class TransferApp:
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
-        self.root.title("Transferimento Cockpits")
+        self.root.title("Cockpit Transfer")
         self.root.geometry("980x720")
         self.root.minsize(900, 640)
         self.app_dir = Path(__file__).resolve().parent.parent
@@ -52,22 +52,22 @@ class TransferApp:
         self.codex_set_current_email_var = tk.StringVar(value=str(self.state.get("codex_set_current_email", "")))
         self.codex_activate_email_var = tk.StringVar(value=str(self.state.get("codex_activate_email", "")))
         self.gemini_activate_email_var = tk.StringVar(value=str(self.state.get("gemini_activate_email", "")))
-        self.status_var = tk.StringVar(value="Pronto")
+        self.status_var = tk.StringVar(value="Ready")
 
         self.inspect_tree: ttk.Treeview | None = None
         self.inspect_tree_mode = "provider"
         self.inspect_email_column = 1
         self.inspect_filter_var = tk.StringVar()
         self.inspect_hint_var = tk.StringVar(
-            value="Controlla le mail trovate e, se vuoi, mandale direttamente al tab Trasferisci. Doppio click su una riga = usa in export."
+            value="Check found emails and optionally send them to the Transfer tab. Double click = use in export."
         )
-        self.inspect_meta_var = tk.StringVar(value="Nessun controllo eseguito.")
+        self.inspect_meta_var = tk.StringVar(value="No check performed.")
         self.inspect_unique_rows_cache: list[dict[str, object]] = []
         self.import_preview_text: tk.Text | None = None
         self.log_text: tk.Text | None = None
         self.email_text: tk.Text | None = None
         self.notebook: ttk.Notebook | None = None
-        self.summary_var = tk.StringVar(value="Inserisci una o piu email e scegli cosa esportare.")
+        self.summary_var = tk.StringVar(value="Enter one or more emails and choose what to export.")
         self._build()
         self.inspect_filter_var.trace_add("write", self._on_inspect_filter_changed)
         self.package_var.trace_add("write", self._on_package_path_changed)
@@ -86,14 +86,14 @@ class TransferApp:
         header = ttk.Frame(outer)
         header.grid(row=0, column=0, sticky="ew", pady=(0, 10))
         header.columnconfigure(0, weight=1)
-        ttk.Label(header, text="Transferimento Cockpits", font=("Segoe UI", 18, "bold")).grid(row=0, column=0, sticky="w")
+        ttk.Label(header, text="Cockpit Transfer", font=("Segoe UI", 18, "bold")).grid(row=0, column=0, sticky="w")
         ttk.Label(
             header,
-            text="Scegli le email, crea uno ZIP unico, importalo sull'altro PC.",
+            text="Choose emails, create a unique ZIP, and import it on the other PC.",
             wraplength=820,
         ).grid(row=1, column=0, sticky="w", pady=(4, 0))
 
-        summary = ttk.LabelFrame(outer, text="Riepilogo", padding=10)
+        summary = ttk.LabelFrame(outer, text="Summary", padding=10)
         summary.grid(row=1, column=0, sticky="ew", pady=(0, 10))
         summary.columnconfigure(0, weight=1)
         ttk.Label(summary, textvariable=self.summary_var, wraplength=840, justify="left").grid(row=0, column=0, sticky="w")
@@ -108,9 +108,9 @@ class TransferApp:
         advanced_tab = ttk.Frame(notebook, padding=12)
         log_tab = ttk.Frame(notebook, padding=12)
 
-        notebook.add(transfer_tab, text="Trasferisci")
-        notebook.add(inspect_tab, text="Controllo")
-        notebook.add(advanced_tab, text="Opzioni")
+        notebook.add(transfer_tab, text="Transfer")
+        notebook.add(inspect_tab, text="Inspect")
+        notebook.add(advanced_tab, text="Options")
         notebook.add(log_tab, text="Log")
 
         self._build_transfer_tab(transfer_tab)
@@ -121,7 +121,7 @@ class TransferApp:
         footer = ttk.Frame(outer)
         footer.grid(row=3, column=0, sticky="ew", pady=(10, 0))
         footer.columnconfigure(1, weight=1)
-        ttk.Button(footer, text="Pulisci log", command=self._clear_log).grid(row=0, column=0, sticky="w")
+        ttk.Button(footer, text="Clear log", command=self._clear_log).grid(row=0, column=0, sticky="w")
         ttk.Label(footer, textvariable=self.status_var, relief="sunken", anchor="w", padding=6).grid(row=0, column=1, sticky="ew", padx=(10, 0))
 
     def _build_transfer_tab(self, parent: ttk.Frame) -> None:
@@ -129,13 +129,13 @@ class TransferApp:
         parent.columnconfigure(1, weight=1)
         parent.rowconfigure(0, weight=1)
 
-        export_panel = ttk.LabelFrame(parent, text="Esporta", padding=10)
+        export_panel = ttk.LabelFrame(parent, text="Export", padding=10)
         export_panel.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
         export_panel.columnconfigure(0, weight=1)
         export_panel.rowconfigure(1, weight=1)
         ttk.Label(
             export_panel,
-            text="Scegli le mail da trasferire oppure mandale qui dal tab Controllo.",
+            text="Choose emails to transfer or send them here from the Inspect tab.",
             wraplength=360,
             justify="left",
         ).grid(row=0, column=0, sticky="w", pady=(0, 8))
@@ -145,13 +145,13 @@ class TransferApp:
         export_body.rowconfigure(0, weight=1)
         self._build_export_tab(export_body)
 
-        import_panel = ttk.LabelFrame(parent, text="Importa", padding=10)
+        import_panel = ttk.LabelFrame(parent, text="Import", padding=10)
         import_panel.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
         import_panel.columnconfigure(0, weight=1)
         import_panel.rowconfigure(1, weight=1)
         ttk.Label(
             import_panel,
-            text="Apri il file ricevuto, controlla l'anteprima e importalo su questo PC.",
+            text="Open the received file, check the preview, and import it into this PC.",
             wraplength=360,
             justify="left",
         ).grid(row=0, column=0, sticky="w", pady=(0, 8))
@@ -170,22 +170,22 @@ class TransferApp:
         export_body.columnconfigure(0, weight=1)
         export_body.rowconfigure(1, weight=1)
 
-        ttk.Label(export_body, text="Email da trasferire").grid(row=0, column=0, sticky="w")
+        ttk.Label(export_body, text="Emails to transfer").grid(row=0, column=0, sticky="w")
         self.email_text = tk.Text(export_body, height=9, width=42, wrap="word")
         self.email_text.grid(row=1, column=0, sticky="nsew", pady=(6, 0))
         self.email_text.bind("<<Modified>>", self._on_email_text_modified)
         self.email_text.edit_modified(False)
-        ttk.Label(export_body, text="Una per riga o separate da virgola.").grid(row=2, column=0, sticky="w", pady=(6, 0))
+        ttk.Label(export_body, text="One per line or comma-separated.").grid(row=2, column=0, sticky="w", pady=(6, 0))
 
         email_actions = ttk.Frame(export_body)
         email_actions.grid(row=3, column=0, sticky="ew", pady=(10, 0))
         email_actions.columnconfigure(3, weight=1)
-        ttk.Button(email_actions, text="Ultimo set", command=self.restore_last_export_set).grid(row=0, column=0, padx=(0, 8))
-        ttk.Button(email_actions, text="Pulisci", command=self.clear_export_emails).grid(row=0, column=1)
-        ttk.Button(email_actions, text="Controlla", command=self.inspect).grid(row=0, column=2, padx=(12, 8))
-        ttk.Button(email_actions, text="Crea ZIP", command=self.create_zip_bundle).grid(row=0, column=3, sticky="e")
+        ttk.Button(email_actions, text="Last set", command=self.restore_last_export_set).grid(row=0, column=0, padx=(0, 8))
+        ttk.Button(email_actions, text="Clear", command=self.clear_export_emails).grid(row=0, column=1)
+        ttk.Button(email_actions, text="Inspect", command=self.inspect).grid(row=0, column=2, padx=(12, 8))
+        ttk.Button(email_actions, text="Create ZIP", command=self.create_zip_bundle).grid(row=0, column=3, sticky="e")
 
-        ttk.Label(export_body, text="Provider da esportare").grid(row=4, column=0, sticky="w", pady=(14, 0))
+        ttk.Label(export_body, text="Providers to export").grid(row=4, column=0, sticky="w", pady=(14, 0))
         scope_frame = ttk.Frame(export_body)
         scope_frame.grid(row=5, column=0, sticky="w", pady=(6, 0))
         ttk.Checkbutton(
@@ -212,7 +212,7 @@ class TransferApp:
         )
         ttk.Label(
             export_body,
-            text="Il controllo usa esattamente i provider selezionati qui sopra.",
+            text="The check uses exactly the providers selected above.",
             wraplength=360,
             justify="left",
         ).grid(row=7, column=0, sticky="w", pady=(8, 0))
@@ -225,14 +225,14 @@ class TransferApp:
         file_row.grid(row=0, column=0, sticky="ew")
         file_row.columnconfigure(0, weight=1)
         ttk.Entry(file_row, textvariable=self.package_var).grid(row=0, column=0, sticky="ew")
-        ttk.Button(file_row, text="Sfoglia", command=self._pick_import_file).grid(row=0, column=1, padx=(6, 0))
+        ttk.Button(file_row, text="Browse", command=self._pick_import_file).grid(row=0, column=1, padx=(6, 0))
 
         actions = ttk.Frame(parent)
         actions.grid(row=1, column=0, sticky="w", pady=(10, 0))
-        ttk.Button(actions, text="Ultimo file", command=self.restore_last_import_file).grid(row=0, column=0, sticky="w")
-        ttk.Button(actions, text="Importa", command=self.import_package).grid(row=0, column=1, sticky="w", padx=(8, 0))
+        ttk.Button(actions, text="Last file", command=self.restore_last_import_file).grid(row=0, column=0, sticky="w")
+        ttk.Button(actions, text="Import", command=self.import_package).grid(row=0, column=1, sticky="w", padx=(8, 0))
 
-        preview_box = ttk.LabelFrame(parent, text="Anteprima file", padding=10)
+        preview_box = ttk.LabelFrame(parent, text="File preview", padding=10)
         preview_box.grid(row=2, column=0, sticky="nsew", pady=(12, 0))
         preview_box.columnconfigure(0, weight=1)
         preview_box.rowconfigure(0, weight=1)
@@ -252,12 +252,12 @@ class TransferApp:
         ttk.Checkbutton(toolbar, text="Codex", variable=self.inspect_product_vars["codex"]).grid(row=0, column=0, sticky="w")
         ttk.Checkbutton(toolbar, text="Gemini", variable=self.inspect_product_vars["gemini"]).grid(row=0, column=1, sticky="w", padx=(10, 0))
         ttk.Checkbutton(toolbar, text="Antigravity", variable=self.inspect_product_vars["antigravity"]).grid(row=0, column=2, sticky="w", padx=(10, 0))
-        ttk.Button(toolbar, text="Usa provider export", command=self.match_inspect_products_to_export).grid(row=0, column=3, sticky="w", padx=(12, 0))
-        ttk.Button(toolbar, text="Mail uniche", command=self.inspect_unique_selected).grid(row=0, column=4, sticky="w", padx=(12, 0))
-        ttk.Button(toolbar, text="Vista tecnica", command=self.inspect_all_selected).grid(row=0, column=5, sticky="w", padx=(8, 0))
-        ttk.Button(toolbar, text="Usa in export", command=self.use_current_emails_for_export).grid(row=0, column=6, sticky="w", padx=(12, 0))
-        ttk.Button(toolbar, text="Copia", command=self.copy_current_emails).grid(row=0, column=7, sticky="w", padx=(8, 0))
-        ttk.Label(toolbar, text="Filtro").grid(row=0, column=9, sticky="e", padx=(12, 6))
+        ttk.Button(toolbar, text="Match export", command=self.match_inspect_products_to_export).grid(row=0, column=3, sticky="w", padx=(12, 0))
+        ttk.Button(toolbar, text="Unique emails", command=self.inspect_unique_selected).grid(row=0, column=4, sticky="w", padx=(12, 0))
+        ttk.Button(toolbar, text="Tech view", command=self.inspect_all_selected).grid(row=0, column=5, sticky="w", padx=(8, 0))
+        ttk.Button(toolbar, text="Use for export", command=self.use_current_emails_for_export).grid(row=0, column=6, sticky="w", padx=(12, 0))
+        ttk.Button(toolbar, text="Copy", command=self.copy_current_emails).grid(row=0, column=7, sticky="w", padx=(8, 0))
+        ttk.Label(toolbar, text="Filter").grid(row=0, column=9, sticky="e", padx=(12, 6))
         ttk.Entry(toolbar, textvariable=self.inspect_filter_var, width=24).grid(row=0, column=10, sticky="ew")
         ttk.Button(toolbar, text="X", width=3, command=self.clear_inspect_filter).grid(row=0, column=11, sticky="w", padx=(6, 0))
 
@@ -282,7 +282,7 @@ class TransferApp:
         parent.columnconfigure(0, weight=1)
         parent.columnconfigure(1, weight=1)
 
-        paths_box = ttk.LabelFrame(parent, text="Percorsi rilevati", padding=10)
+        paths_box = ttk.LabelFrame(parent, text="Detected paths", padding=10)
         paths_box.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
         paths_box.columnconfigure(1, weight=1)
         ttk.Label(paths_box, text="Antigravity").grid(row=0, column=0, sticky="w")
@@ -292,22 +292,22 @@ class TransferApp:
         ttk.Label(paths_box, text="Gemini").grid(row=2, column=0, sticky="w", pady=(8, 0))
         ttk.Label(paths_box, text=self._short_path(Path(self.gemini_dir_var.get()))).grid(row=2, column=1, sticky="w", pady=(8, 0))
 
-        options_box = ttk.LabelFrame(parent, text="Opzioni facoltative", padding=10)
+        options_box = ttk.LabelFrame(parent, text="Optional settings", padding=10)
         options_box.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
         options_box.columnconfigure(1, weight=0)
-        ttk.Checkbutton(options_box, text="Sostituisci email gia presenti", variable=self.overwrite_var).grid(row=0, column=0, sticky="w")
-        ttk.Checkbutton(options_box, text="Chiudi Codex o Cockpit Tools se serve", variable=self.force_stop_var).grid(row=1, column=0, columnspan=2, sticky="w", pady=(8, 0))
+        ttk.Checkbutton(options_box, text="Overwrite existing emails", variable=self.overwrite_var).grid(row=0, column=0, sticky="w")
+        ttk.Checkbutton(options_box, text="Close Codex or Cockpit Tools if needed", variable=self.force_stop_var).grid(row=1, column=0, columnspan=2, sticky="w", pady=(8, 0))
 
-        ttk.Label(options_box, text="Email corrente in Cockpit Tools (Codex)").grid(row=2, column=0, sticky="w", pady=(14, 0))
+        ttk.Label(options_box, text="Current email in Cockpit Tools (Codex)").grid(row=2, column=0, sticky="w", pady=(14, 0))
         ttk.Entry(options_box, textvariable=self.codex_set_current_email_var, width=34).grid(row=2, column=1, sticky="w", pady=(14, 0))
-        ttk.Label(options_box, text="Profilo locale .codex da attivare").grid(row=3, column=0, sticky="w", pady=(8, 0))
+        ttk.Label(options_box, text="Local .codex profile to activate").grid(row=3, column=0, sticky="w", pady=(8, 0))
         ttk.Entry(options_box, textvariable=self.codex_activate_email_var, width=34).grid(row=3, column=1, sticky="w", pady=(8, 0))
-        ttk.Label(options_box, text="Profilo locale .gemini da attivare").grid(row=4, column=0, sticky="w", pady=(8, 0))
+        ttk.Label(options_box, text="Local .gemini profile to activate").grid(row=4, column=0, sticky="w", pady=(8, 0))
         ttk.Entry(options_box, textvariable=self.gemini_activate_email_var, width=34).grid(row=4, column=1, sticky="w", pady=(8, 0))
 
         ttk.Label(
             options_box,
-            text="Lasciali vuoti se vuoi solo importare gli account senza attivarli localmente.",
+            text="Leave empty if you only want to import accounts without local activation.",
             wraplength=820,
             justify="left",
         ).grid(row=5, column=0, columnspan=2, sticky="w", pady=(14, 0))
@@ -728,19 +728,19 @@ class TransferApp:
             if row.get("is_active_codex_profile"):
                 extra.append("active")
             suffix = f" ({', '.join(extra)})" if extra else ""
-            return f"[{product}] {email}: {'presente' if present else 'mancante'}{suffix}"
+            return f"[{product}] {email}: {'present' if present else 'missing'}{suffix}"
         if product == "gemini":
             present = bool(row.get("has_cockpit_index"))
             suffix = " (active)" if row.get("is_active_gemini_profile") else ""
-            return f"[{product}] {email}: {'presente' if present else 'mancante'}{suffix}"
+            return f"[{product}] {email}: {'present' if present else 'missing'}{suffix}"
         if product == "antigravity":
             present = bool(row.get("has_cockpit_index")) or bool(row.get("account_id"))
-            return f"[{product}] {email}: {'presente' if present else 'mancante'}"
+            return f"[{product}] {email}: {'present' if present else 'missing'}"
         return f"[{product}] {email}"
 
     def _confirm_export_report(self, report: dict[str, object], archive_path: Path) -> bool:
         dialog = tk.Toplevel(self.root)
-        dialog.title("Conferma export")
+        dialog.title("Confirm Export")
         dialog.transient(self.root)
         dialog.grab_set()
         dialog.geometry("620x420")
@@ -753,25 +753,25 @@ class TransferApp:
 
         ttk.Label(
             frame,
-            text=f"Sto per creare questo file:\n{self._short_path(archive_path)}",
+            text=f"About to create this file:\n{self._short_path(archive_path)}",
             justify="left",
         ).grid(row=0, column=0, sticky="w")
 
         text = tk.Text(frame, wrap="word", height=14)
         text.grid(row=1, column=0, sticky="nsew", pady=(12, 0))
-        lines = ["Riepilogo prima dell'export", ""]
+        lines = ["Summary before export", ""]
         for product, product_report in report.items():
             if not isinstance(product_report, dict):
                 continue
             lines.append(
-                f"{product.capitalize()}: trovate {product_report.get('found_count', 0)} su {product_report.get('selected_count', 0)}, mancanti {product_report.get('missing_count', 0)}"
+                f"{product.capitalize()}: found {product_report.get('found_count', 0)} of {product_report.get('selected_count', 0)}, missing {product_report.get('missing_count', 0)}"
             )
             found = product_report.get("found_emails") or []
             missing = product_report.get("missing_emails") or []
             if found:
-                lines.append("Trovate: " + ", ".join(str(item) for item in found))
+                lines.append("Found: " + ", ".join(str(item) for item in found))
             if missing:
-                lines.append("Mancanti: " + ", ".join(str(item) for item in missing))
+                lines.append("Missing: " + ", ".join(str(item) for item in missing))
             lines.append("")
         text.insert("1.0", "\n".join(lines).strip())
         text.configure(state="disabled")
@@ -790,8 +790,8 @@ class TransferApp:
         def cancel() -> None:
             dialog.destroy()
 
-        ttk.Button(buttons, text="Annulla", command=cancel).grid(row=0, column=0, sticky="ew", padx=(0, 6))
-        ttk.Button(buttons, text="Crea ZIP", command=confirm).grid(row=0, column=1, sticky="ew", padx=(6, 0))
+        ttk.Button(buttons, text="Cancel", command=cancel).grid(row=0, column=0, sticky="ew", padx=(0, 6))
+        ttk.Button(buttons, text="Create ZIP", command=confirm).grid(row=0, column=1, sticky="ew", padx=(6, 0))
 
         dialog.protocol("WM_DELETE_WINDOW", cancel)
         self.root.wait_window(dialog)
@@ -822,13 +822,13 @@ class TransferApp:
                     product_found += 1 if has_index else 0
                     product_missing += 0 if has_index else 1
                     details.append(self._format_row_status(product, row))
-                summary_chunks.append(f"{product.capitalize()}: presenti {product_found}, mancanti {product_missing}")
+                summary_chunks.append(f"{product.capitalize()}: found {product_found}, missing {product_missing}")
             self.summary_var.set(
-                f"Controllo sulle email inserite ({len(emails)} email). " + " | ".join(summary_chunks)
+                f"Email check ({len(emails)} emails). " + " | ".join(summary_chunks)
             )
-            return OperationResult("Controllo email completato.", details)
+            return OperationResult("Email check completed.", details)
 
-        self._run_action("Controllo email in corso...", action)
+        self._run_action("Checking emails...", action)
 
     def inspect_all(self, products: list[str]) -> None:
         def action():
@@ -842,7 +842,7 @@ class TransferApp:
             )
             self._fill_inspect_tree(rows_by_product)
             self.inspect_hint_var.set(
-                "Vista tecnica: utile solo se vuoi vedere le righe lette dai singoli file. Doppio click su una riga = usa in export."
+                "Technical view: useful only if you want to see rows read from individual files. Double click = use in export."
             )
             summary_chunks = []
             details = []
@@ -854,11 +854,11 @@ class TransferApp:
                     if email and has_index:
                         emails.append(str(email))
                 summary_chunks.append(f"{product.capitalize()}: {len(emails)} email")
-                details.append(f"[{product}] trovate {len(emails)} email")
-            self.summary_var.set(" | ".join(summary_chunks) if summary_chunks else "Nessuna email trovata.")
-            return OperationResult("Elenco email completato.", details)
+                details.append(f"[{product}] found {len(emails)} emails")
+            self.summary_var.set(" | ".join(summary_chunks) if summary_chunks else "No emails found.")
+            return OperationResult("Email list completed.", details)
 
-        self._run_action("Lettura elenco email in corso...", action)
+        self._run_action("Reading email list...", action)
 
     def inspect_unique(self, products: list[str]) -> None:
         def action():
@@ -872,19 +872,19 @@ class TransferApp:
             unique_rows = summarize_unique_emails(rows_by_product)
             self.inspect_unique_rows_cache = unique_rows
             self.inspect_hint_var.set(
-                "Vista principale: una riga per email e una colonna per ogni provider. Doppio click su una riga = usa in export."
+                "Main view: one row per email and one column for each provider. Double click = use in export."
             )
             self._render_unique_rows()
             codex_count = sum(1 for row in unique_rows if row.get("codex_registered"))
             gemini_count = sum(1 for row in unique_rows if row.get("gemini_registered"))
             antigravity_count = sum(1 for row in unique_rows if row.get("antigravity_registered"))
-            details = [f"Mail uniche trovate: {len(unique_rows)}"]
-            details.append(f"Registrate su Codex: {codex_count}")
-            details.append(f"Registrate su Gemini: {gemini_count}")
-            details.append(f"Registrate su Antigravity: {antigravity_count}")
-            return OperationResult("Vista mail uniche completata.", details)
+            details = [f"Unique emails found: {len(unique_rows)}"]
+            details.append(f"Registered on Codex: {codex_count}")
+            details.append(f"Registered on Gemini: {gemini_count}")
+            details.append(f"Registered on Antigravity: {antigravity_count}")
+            return OperationResult("Unique email view completed.", details)
 
-        self._run_action("Costruzione vista mail uniche...", action)
+        self._run_action("Building unique email view...", action)
 
     def inspect_all_selected(self) -> None:
         products = [name for name, enabled in self.inspect_product_vars.items() if enabled.get()]
@@ -896,7 +896,7 @@ class TransferApp:
     def inspect_unique_selected(self) -> None:
         products = [name for name, enabled in self.inspect_product_vars.items() if enabled.get()]
         if not products:
-            messagebox.showinfo("Selezione vuota", "Seleziona almeno un provider da elencare.")
+            messagebox.showinfo("Empty selection", "Select at least one provider to list.")
             return
         self.inspect_unique(products)
 
@@ -935,7 +935,7 @@ class TransferApp:
 
     def _copy_emails(self, emails: list[str], empty_message: str, success_message: str) -> None:
         if not emails:
-            messagebox.showinfo("Nessuna email", empty_message)
+            messagebox.showinfo("No emails", empty_message)
             return
         self.root.clipboard_clear()
         self.root.clipboard_append("\n".join(emails))
@@ -946,23 +946,23 @@ class TransferApp:
     def copy_selected_emails(self) -> None:
         self._copy_emails(
             self._selected_emails_from_tree(),
-            "Seleziona una o piu righe nella tabella.",
-            "Email selezionate copiate negli appunti",
+            "Select one or more rows in the table.",
+            "Selected emails copied to clipboard",
         )
 
     def copy_all_visible_emails(self) -> None:
         self._copy_emails(
             self._visible_emails_from_tree(),
-            "Non ci sono email visibili da copiare.",
-            "Tutte le email visibili sono state copiate negli appunti",
+            "No visible emails to copy.",
+            "All visible emails copied to clipboard",
         )
 
     def copy_current_emails(self) -> None:
         selected = self._selected_emails_from_tree()
         if selected:
-            self._copy_emails(selected, "Seleziona una o piu righe.", "Email selezionate copiate")
+            self._copy_emails(selected, "Select one or more rows.", "Selected emails copied")
             return
-        self._copy_emails(self._visible_emails_from_tree(), "Non ci sono email visibili da copiare.", "Email copiate")
+        self._copy_emails(self._visible_emails_from_tree(), "No visible emails to copy.", "Emails copied")
 
     def create_zip_bundle(self) -> None:
         def action():
@@ -985,7 +985,7 @@ class TransferApp:
                 package_data = read_json_or_default(package_path, {})
                 report = package_data.get("report") or {}
                 if report and not self._confirm_export_report(report, archive_path):
-                    return OperationResult("Export annullato.", ["Hai annullato la creazione dello ZIP."])
+                    return OperationResult("Export cancelled.", ["You cancelled the ZIP creation."])
                 zip_result = create_bundle_zip(
                     package_path,
                     archive_path,
@@ -994,20 +994,20 @@ class TransferApp:
                     gemini_activate_email=self.gemini_activate_email_var.get().strip() or None,
                 )
             self.package_var.set(str(archive_path))
-            summary_parts = [f"ZIP pronto: {self._short_path(archive_path)}"]
+            summary_parts = [f"ZIP ready: {self._short_path(archive_path)}"]
             for line in export_result.details:
-                if "trovate" in line and line.startswith("["):
+                if "found" in line and line.startswith("["):
                     summary_parts.append(line)
             self.summary_var.set(" | ".join(summary_parts))
-            return OperationResult("File ZIP creato.", [*export_result.details, *zip_result.details], archive_path)
+            return OperationResult("ZIP file created.", [*export_result.details, *zip_result.details], archive_path)
 
-        self._run_action("Creazione ZIP in corso...", action)
+        self._run_action("Creating ZIP...", action)
 
     def import_package(self) -> None:
         def action():
             import_path = Path(self.package_var.get())
             if not import_path.exists():
-                raise ValueError("Seleziona un file ZIP o JSON valido.")
+                raise ValueError("Select a valid ZIP or JSON file.")
 
             if import_path.suffix.lower() == ".zip":
                 temp_dir, package_path = extract_zip_to_temp(import_path)
@@ -1027,14 +1027,14 @@ class TransferApp:
                     temp_dir.cleanup()
                 restart_target = self._restart_cockpit_if_possible()
                 if restart_target:
-                    result.details.append(f"Cockpit riavviato automaticamente: {restart_target}")
+                    result.details.append(f"Cockpit automatically restarted: {restart_target}")
                     self.summary_var.set(
-                        "Import completato dal file ZIP ricevuto. Cockpit e' stato riavviato automaticamente."
+                        "Import completed from received ZIP file. Cockpit has been automatically restarted."
                     )
                 else:
-                    result.details.append("Riavvio automatico Cockpit non disponibile: launcher non trovato.")
+                    result.details.append("Automatic Cockpit restart not available: launcher not found.")
                     self.summary_var.set(
-                        "Import completato dal file ZIP ricevuto. Controlla il tab Log per vedere cosa e' stato importato o saltato per ogni provider."
+                        "Import completed from received ZIP file. Check the Log tab to see what was imported or skipped for each provider."
                     )
                 return result
 
@@ -1051,14 +1051,14 @@ class TransferApp:
             )
             restart_target = self._restart_cockpit_if_possible()
             if restart_target:
-                result.details.append(f"Cockpit riavviato automaticamente: {restart_target}")
-                self.summary_var.set("Import completato dal file selezionato. Cockpit e' stato riavviato automaticamente.")
+                result.details.append(f"Cockpit automatically restarted: {restart_target}")
+                self.summary_var.set("Import completed from selected file. Cockpit has been automatically restarted.")
             else:
-                result.details.append("Riavvio automatico Cockpit non disponibile: launcher non trovato.")
-                self.summary_var.set("Import completato dal file selezionato. Controlla il tab Log per vedere cosa e' stato importato o saltato per ogni provider.")
+                result.details.append("Automatic Cockpit restart not available: launcher not found.")
+                self.summary_var.set("Import completed from selected file. Check the Log tab to see what was imported or skipped for each provider.")
             return result
 
-        self._run_action("Import in corso...", action)
+        self._run_action("Importing...", action)
 
 
 def launch_gui() -> None:

@@ -18,8 +18,8 @@ if %ERRORLEVEL%==0 (
       if %ERRORLEVEL%==0 (
         start "" /D "%TEMP%" python "%APP_DIR%\main.pyw"
       ) else (
-        echo Python non trovato.
-        echo Installa Python 3 e poi riapri questa cartella.
+        echo Python not found.
+        echo Please install Python 3 and then reopen this folder.
         pause
       )
     )

@@ -1,6 +1,6 @@
 # Cockpit Transfer
 
-Transferimento Cockpits is a tool designed to easily package and transfer login tokens and profiles of desktop AI apps (like Codex, Gemini, Antigravity) between different computers. 
+Cockpit Transfer is a tool designed to easily package and transfer login tokens and profiles of desktop AI apps (like Codex, Gemini, Antigravity) between different computers.
 
 ## Features
 
@@ -17,18 +17,18 @@ Transferimento Cockpits is a tool designed to easily package and transfer login 
 
 ## Getting Started
 
-1. Set up the local environment and dependencies using `{uv}` or by directly executing the scripts on supported platforms.
+1. Set up the local environment and dependencies using Python 3.
 2. Launch the app using one of the pre-configured launcher scripts:
-   - macOS / Linux: `avvia-transferimento-cockpits.command` or `avvia-transferimento-cockpits.sh`
-   - Windows: `avvia-transferimento-cockpits.bat`
+   - macOS: `macos_launchers/launch-cockpit-transfer.command`
+   - Windows: `launch-cockpit-transfer.bat`
 3. Enter the emails you wish to export in the "Transfer" tab.
 4. Select the providers you want to target (Codex, Gemini, Antigravity).
-5. Click **"Crea ZIP"** (Create ZIP) to generate the secure package.
-6. Transfer the ZIP to your target machine, then open this app again and use the **"Importa"** tab to load the profiles.
+5. Click **"Create ZIP"** to generate the secure package.
+6. Transfer the ZIP to your target machine, then open this app again and use the **"Import"** tab to load the profiles.
 
 ## Developer & Internal
 
-The project provides an intuitive **Tkinter-based GUI** for ease of use, as well as command-line functionalities. The modular architecture (`bundle.py`, `gui.py`, `multi_transfer.py`, `runtime_support.py`) ensures that reading, replacing, extracting and restarting different product cockpits flows seamlessly.
+The project provides an intuitive **Tkinter-based GUI** for ease of use, as well as command-line functionalities. The modular architecture ensures that reading, replacing, extracting and restarting different product cockpits flows seamlessly.
 
 ## License & Ownership
 
