@@ -1,0 +1,5 @@
+[project]
+name = "transferimento-cockpits"
+version = "0.1.0"
+description = "Tool locale e portabile per trasferire account Antigravity, Codex e Gemini tra PC Windows."
+requires-python = ">=3.11"
