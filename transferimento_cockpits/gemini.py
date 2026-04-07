@@ -202,7 +202,6 @@ def import_accounts(
         for name in ("google_accounts.json", "oauth_creds.json"):
             backup_if_exists(gemini_base_dir / name, gemini_backup_root)
 
-        google_accounts = profile_entry["google_accounts"]
         existing_google = read_json_or_default(gemini_base_dir / "google_accounts.json", {"active": None, "old": []})
         previous_active = existing_google.get("active")
         old_emails = [item for item in to_mutable_list(existing_google.get("old")) if item]
