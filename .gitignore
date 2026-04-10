@@ -1,7 +1,0 @@
-__pycache__/
-*.pyc
-app_state.json
-*.zip
-.DS_Store
-.ruff_cache/
-.venv/

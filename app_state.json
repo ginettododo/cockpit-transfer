@@ -1,0 +1,17 @@
+{
+  "export_products": [
+    "codex",
+    "gemini"
+  ],
+  "inspect_products": [
+    "codex"
+  ],
+  "last_emails": [],
+  "output_dir": "C:\\Users\\massa\\Downloads",
+  "last_package_path": "",
+  "overwrite_existing_email": false,
+  "force_stop_processes": true,
+  "codex_set_current_email": "",
+  "codex_activate_email": "",
+  "gemini_activate_email": ""
+}
